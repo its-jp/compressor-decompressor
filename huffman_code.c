@@ -1,4 +1,4 @@
-#include "code.h"
+#include "huffman_code.h"
 #include <stdlib.h>
 boolean init_code (huffman_code* c /* por referência */)
 {
@@ -19,7 +19,7 @@ void free_code (huffman_code* c /* por referência */)
 boolean add_bit (huffman_code* c /* por referência */,
                       U8 valor /* 0 ou 1 */)
 {
-    if (csize==c->capacity)
+    if (c->size==c->capacity)
     {
         U8* novo=(U8*)malloc((c->capacity/8+1)*sizeof(U8));
         if (novo==NULL) return false;
