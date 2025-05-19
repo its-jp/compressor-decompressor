@@ -9,9 +9,10 @@ priority_queue* priority_queue_create(){
     priority_queue* queue = (priority_queue*) malloc(sizeof(priority_queue));
     if(queue == NULL) return NULL;
 
-    queue->head = (singly_linked_list_node*) malloc(sizeof(singly_linked_list_node));
-    if(queue->head == NULL) return NULL;
+    queue->head = NULL;
+    queue->last = NULL;
     queue->size = 0;
+
     return queue;
 }
 void priority_queue_enqueue(priority_queue* queue, huffman_node* huffman_node){
@@ -19,6 +20,7 @@ void priority_queue_enqueue(priority_queue* queue, huffman_node* huffman_node){
 
     //Caso seja o primeiro no
     if(queue->last == NULL){
+        queue->head = (singly_linked_list_node*) malloc(sizeof(singly_linked_list_node));
         queue->head->data = *huffman_node;
         queue->head->next = NULL;
         queue->size++;
@@ -33,17 +35,24 @@ void priority_queue_enqueue(priority_queue* queue, huffman_node* huffman_node){
     queue->size++;
 
 }
-huffman_node* priority_queue_dequeue(priority_queue* queue){
-    if(queue->size == 0) return NULL;
+    huffman_node* priority_queue_dequeue(priority_queue* queue){
+        if(queue->size == 0) return NULL;
 
+        singly_linked_list_node* old_head = queue->head;
+        huffman_node* dequeued_node = (huffman_node*) malloc(sizeof(huffman_node)); //Crio um espaco para oq o ponteiro vai apontar
+        *dequeued_node = old_head->data; //Note que eu digo que o valor q o ponteiro aponta eh o old_head->data, e nao seu 
+                                        //seu endereco, pois logo sera apagado com free(old_head);
 
-    huffman_node* dequeued_node = (huffman_node*) malloc(sizeof(huffman_node));
-    dequeued_node = &(queue->head->data);
-    queue->head = queue->head->next;
-    free(queue->head);
-    queue->size--;
-    return dequeued_node;
-}
+        
+        queue->head = old_head->next;
+
+        //Se a struct tem ponteiros, eles nao sao liberados juntos quando a struct eh liberada!
+        //Nao vou liberar o old_head->next pois ele que virara o novo head! Ter isso em mente!
+        free(old_head);
+        queue->size--;
+
+        return dequeued_node;
+    }
 void priority_queue_update(priority_queue* queue, huffman_node* huffman_node){
     
 }
